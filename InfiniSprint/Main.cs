@@ -45,8 +45,10 @@ namespace InfiniSprint
             {
                 if (!Main.enabled) return;
 
-                var bodyInputs = (InputBankTest)bodyInputsField.GetValue(__instance);
-                bodyInputs.sprint.PushState(true);
+                NetworkUser player = NetworkUser.readOnlyLocalPlayersList[0];
+                InputBankTest bodyInputs = (InputBankTest) bodyInputsField.GetValue(__instance);
+
+                bodyInputs.sprint.PushState(!player.inputPlayer.GetButton("Sprint"));
             }
         }
     }
