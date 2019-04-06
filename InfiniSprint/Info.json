@@ -1,0 +1,7 @@
+﻿{
+  "Id": "InfiniSprint",
+  "DisplayName": "InfiniSprint",
+  "Author": "Asosa",
+  "Version": "1.0.0",
+  "EntryMethod": "InfiniSprint.Main.Load"
+}
