@@ -1,52 +1,49 @@
-﻿using Harmony;
+﻿using System.Reflection;
+using Harmony;
 using RoR2;
 using UnityModManagerNet;
-using System.Reflection;
 
-namespace InfiniSprint
-{
-    static class Main
-    {
-        public static bool enabled;
-        public static UnityModManager.ModEntry mod;
+namespace InfiniSprint {
+    internal static class Main {
+        private static bool _enabled;
 
-        static bool Load(UnityModManager.ModEntry modEntry)
-        {
-            mod = modEntry;
+        private static bool Load(UnityModManager.ModEntry modEntry) {
             modEntry.OnToggle = OnToggle;
 
             var harmony = HarmonyInstance.Create("dev.eliaswatson.infinisprint");
-            if (harmony != null) harmony.PatchAll();
-            else { mod.Logger.Error("Failed to initialize Harmony"); return false; }
+            if (harmony != null) {
+                harmony.PatchAll();
+            }
+            else {
+                modEntry.Logger.Error("Failed to initialize Harmony");
+                return false;
+            }
 
             return true;
         }
 
-        static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
-        {
-            enabled = value;
+        private static bool OnToggle(UnityModManager.ModEntry modEntry, bool value) {
+            _enabled = value;
             return true;
         }
 
         [HarmonyPatch(typeof(PlayerCharacterMasterController))]
         [HarmonyPatch("FixedUpdate")]
-        static class SprintPatch
-        {
-            private static FieldInfo bodyInputsField;
+        private static class SprintPatch {
+            private static FieldInfo _bodyInputsField;
 
-            static bool Prepare()
-            {
-                bodyInputsField = typeof(PlayerCharacterMasterController).GetField("bodyInputs", BindingFlags.Instance | BindingFlags.NonPublic);
+            private static bool Prepare() {
+                _bodyInputsField = typeof(PlayerCharacterMasterController).GetField("bodyInputs",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
 
-                return (bodyInputsField != null);
+                return _bodyInputsField != null;
             }
 
-            static void Postfix(PlayerCharacterMasterController __instance)
-            {
-                if (!Main.enabled) return;
+            private static void Postfix(PlayerCharacterMasterController __instance) {
+                if (!_enabled) return;
 
-                NetworkUser player = NetworkUser.readOnlyLocalPlayersList[0];
-                InputBankTest bodyInputs = (InputBankTest) bodyInputsField.GetValue(__instance);
+                var player = NetworkUser.readOnlyLocalPlayersList[0];
+                var bodyInputs = (InputBankTest) _bodyInputsField.GetValue(__instance);
 
                 bodyInputs.sprint.PushState(!player.inputPlayer.GetButton("Sprint"));
             }
