@@ -1,6 +1,7 @@
 # InfiniSprint
 This is a [UMM](https://www.nexusmods.com/site/mods/21/) mod for Risk of Rain 2.
-It makes you constantly sprint so you no longer need to hit Ctrl all the time.
+It makes you constantly sprint so you no longer need to hit the sprint key all the time.
+If you want to stop sprinting for a moment, you can hold the sprint key to walk.
 
 ## Installation
 ### Install UMM
